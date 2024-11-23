@@ -18,7 +18,7 @@ public class TheRipper extends FrontRowCard {
         this.setAttacked(true);
         card.setAttackDamage(card.getAttackDamage() - 2);
 
-        if (card.getAttackDamage() < 2) {
+        if (card.getAttackDamage() < 0) {
             card.setAttackDamage(0);
         }
     }

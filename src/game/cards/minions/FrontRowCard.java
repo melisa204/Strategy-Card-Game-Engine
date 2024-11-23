@@ -16,7 +16,7 @@ public class FrontRowCard extends Card {
 
     @Override
     public String putCard (Player player, int handIdx) {
-        System.out.println("My mana: " + player.getMana() + " Card mana: " + player.getCurrentHand().get(handIdx).getMana());
+//        System.out.println("My mana: " + player.getMana() + " Card mana: " + player.getCurrentHand().get(handIdx).getMana());
         if (player.getMana() < player.getCurrentHand().get(handIdx).getMana())
             return "Not enough mana to place card on table.";
         else if (player.getFrontRow().size() >= 5)
@@ -25,7 +25,7 @@ public class FrontRowCard extends Card {
             player.setMana(player.getMana() - player.getCurrentHand().get(handIdx).getMana());
             player.getFrontRow().add(player.getCurrentHand().get(handIdx));
             player.getCurrentHand().remove(handIdx);
-            System.out.println("FrontRowCard placed");
+//            System.out.println("FrontRowCard placed");
             return "";
         }
     }

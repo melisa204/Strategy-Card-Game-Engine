@@ -22,6 +22,6 @@ public class EmpressThorina extends Hero{
             }
         }
 
-        attackedRow.remove(indexOfAttackedCard); // TODO: sau o sterg cand ma intorc in Game?
+        attackedRow.remove(indexOfAttackedCard);
     }
 }

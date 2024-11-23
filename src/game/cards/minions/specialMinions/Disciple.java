@@ -18,6 +18,5 @@ public class Disciple extends BackRowCard {
         this.setAttacked(true);
 
         card.setHealth(card.getHealth() + 2);
-        this.setHealth(card.getHealth());
     }
 }

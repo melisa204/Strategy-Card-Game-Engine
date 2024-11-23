@@ -15,5 +15,6 @@ public class GeneralKocioraw extends Hero{
         for (Card card : attackedRow) {
             card.setAttackDamage(card.getAttackDamage() + 1);
         }
+
     }
 }

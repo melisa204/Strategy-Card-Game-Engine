@@ -121,13 +121,13 @@ public class Game {
 
         player1.setMana(player1.getMana() + currentRound);
         player2.setMana(player2.getMana() + currentRound);
-        System.out.println("player1 mana: " + player1.getMana());
-        System.out.println("player2 mana: " + player2.getMana());
+//        System.out.println("player1 mana: " + player1.getMana());
+//        System.out.println("player2 mana: " + player2.getMana());
     }
 
     public void endPlayerTurn() {
         // resetez cartile de pe masa
-        if (currentPlayer == 1) { //TODO de schimbat logica de freeze. trb unfreeze la cartile de pe masa, nu la cele din mana
+        if (currentPlayer == 1) {
             for (Card card : player1.getBackRow()) {
                 if (card.isFrozen())
                     card.setFrozen(false);
@@ -140,6 +140,7 @@ public class Game {
                 if (card.usedAttack())
                     card.setAttacked(false);
             }
+            player1.setUsedHero(false);
             currentPlayer = 2;
         } else {
             for (Card card : player2.getBackRow()) {
@@ -154,6 +155,7 @@ public class Game {
                 if (card.usedAttack())
                     card.setAttacked(false);
             }
+            player2.setUsedHero(false);
             currentPlayer = 1;
         }
 
@@ -165,7 +167,7 @@ public class Game {
     }
 
     public String placeCard(int handIdx) {
-        System.out.println("Placing card" + handIdx);
+//        System.out.println("Placing card" + handIdx);
         String result = null;
         Player auxPlayer;
         if (currentPlayer == 1)
@@ -174,10 +176,10 @@ public class Game {
             auxPlayer = player2;
 
         result = auxPlayer.getCurrentHand().get(handIdx).putCard(auxPlayer, handIdx);
-        if (result != "")
-            System.out.println(result);
-        else
-            System.out.println("Card placed without message");
+//        if (result != "")
+//            System.out.println(result);
+//        else
+//            System.out.println("Card placed without message");
         return result;
     }
 
@@ -208,6 +210,36 @@ public class Game {
         table.add(deckToOutputDeck(player1.getBackRow()));
 
         return table;
+    }
+
+    public ArrayList<CardOutput> getFrozenCardsOnTable() {
+        ArrayList<CardOutput> tableFrozen = new ArrayList<>();
+
+        for (Card card : player2.getBackRow()) {
+            if (card.isFrozen()) {
+                tableFrozen.add(new CardOutput(card));
+            }
+        }
+
+        for (Card card : player2.getFrontRow()) {
+            if (card.isFrozen()) {
+                tableFrozen.add(new CardOutput(card));
+            }
+        }
+
+        for (Card card : player1.getFrontRow()) {
+            if (card.isFrozen()) {
+                tableFrozen.add(new CardOutput(card));
+            }
+        }
+
+        for (Card card : player1.getBackRow()) {
+            if (card.isFrozen()) {
+                tableFrozen.add(new CardOutput(card));
+            }
+        }
+
+        return tableFrozen;
     }
 
     public String cardUsesAttack(Coordinates attackerPos, Coordinates attackedPos) {
@@ -270,61 +302,74 @@ public class Game {
         Card attackerCard = this.getCardAt(attackerPos);
 
         String result = "";
+        System.out.println("numele atacatorului este: " + attackerCard.getName());
+        System.out.println("ataca jucatorul cu eroul: " + attackedPlayer.getHero().getName());
+
+        System.out.println("attacker e freeze: " + attackerCard.isFrozen());
+        System.out.println("attacker a atacat: " + attackerCard.usedAttack());
+        System.out.println("e ripper?" + attackerCard.getName().equals("Disciple"));
+
 
         // incep verificarile
         if (attackerCard.isFrozen()) {
             // verific daca cartea atacatorului este inghetata
             result = "Attacker card is frozen.";
+            System.out.println("am vazut ca nu e freeze");
         } else if (attackerCard.usedAttack()) {
             // verific daca cartea a atacat deja
             result = "Attacker card has already attacked this turn.";
-        } else if (attackerCard.getName() == "Disciple") {
+            System.out.println("am vazut ca nu e used");
+        } else if (attackerCard.getName().equals("Disciple")) {
+            // Disciple nu trebuie sa atace tankuri prima data, il aplic direct pe cartea pe care am primit o
             if ((attackedPos.getX() < 2 && attackerPos.getX() > 1) || (attackedPos.getX() > 1 && attackerPos.getX() < 2))
                 result = "Attacked card does not belong to the current player.";
-        } else if (attackerCard.getName() == "The Ripper" || attackerCard.getName() == "Miraj" || attackerCard.getName() == "The Cursed One") {
+            else {
+                attackerCard.specialAbility(this.getCardAt(attackedPos));
+            }
+        } else if (attackerCard.getName().equals("The Ripper") || attackerCard.getName().equals("Miraj") || attackerCard.getName().equals("The Cursed One")) {
+            System.out.println("am match pe nume");
             if ((attackedPos.getX() < 2 && attackerPos.getX() < 2) || (attackedPos.getX() >= 2 && attackerPos.getX() >= 2)) {
                 // verific daca cartea atacata este una dintre cartile mele
                 result = "Attacked card does not belong to the enemy.";
+                System.out.println("am vazut ca nu e a mea");
             } else {
-                // Disciple nu trebuie sa atace tankuri prima data, il aplic direct pe cartea pe care am primit o
-                if (attackerCard.getName() == "Disciple")
+                // caut un tank, iar daca exista il atac pe acela
+                for (Card card : attackedPlayer.getFrontRow()) {
+                    if (card.getName() == "Goliath" || card.getName() == "Warden") {
+                        attackerCard.specialAbility(card);
+                        if (card.getHealth() <= 0) {
+                            attackedPlayer.getFrontRow().remove(card);
+                        }
+                        result = "";
+                        System.out.println("Abilitate pe tank la " + attackedPos.getX() + " " + attackedPos.getY());
+                        break;
+                    }
+                }
+                if (attackerCard.usedAttack() == false) {
+                    // daca nu am gasit tank, atac cartea de pe pozitia attackedPos
                     attackerCard.specialAbility(this.getCardAt(attackedPos));
-                else {
-                    // caut un tank, iar daca exista il atac pe acela
-                    for (Card card : attackedPlayer.getFrontRow()) {
-                        if (card.getName() == "Goliath" || card.getName() == "Warden") {
-                            attackerCard.specialAbility(card);
-                            if (card.getHealth() <= 0) {
-                                attackedPlayer.getFrontRow().remove(card);
-                            }
-                            result = "";
-                            break;
-                        }
-                    }
-                    if (attackerCard.usedAttack() == false) {
-                        // daca nu am gasit tank, atac cartea de pe pozitia attackedPos
-                        attackerCard.specialAbility(this.getCardAt(attackedPos));
-                        if (this.getCardAt(attackedPos).getHealth() <= 0) {
-                            // daca cartea atacata a murit, o elimin
-                            switch (attackedPos.getX()) {
-                                case 0:
-                                    player2.getBackRow().remove(attackedPos.getY());
-                                    break;
-                                case 1:
-                                    player2.getFrontRow().remove(attackedPos.getY());
-                                    break;
-                                case 2:
-                                    player1.getFrontRow().remove(attackedPos.getY());
-                                    break;
-                                case 3:
-                                    player1.getBackRow().remove(attackedPos.getY());
-                                    break;
+                    System.out.println("Abilitate pe " + attackedPos.getX() + " " + attackedPos.getY());
+                    if (this.getCardAt(attackedPos).getHealth() <= 0) {
+                        // daca cartea atacata a murit, o elimin
+                        switch (attackedPos.getX()) {
+                            case 0:
+                                player2.getBackRow().remove(attackedPos.getY());
+                                break;
+                            case 1:
+                                player2.getFrontRow().remove(attackedPos.getY());
+                                break;
+                            case 2:
+                                player1.getFrontRow().remove(attackedPos.getY());
+                                break;
+                            case 3:
+                                player1.getBackRow().remove(attackedPos.getY());
+                                break;
                             }
                         }
-                    }
                 }
             }
         }
+        System.out.println("Mesajul din abilitate: " + result);
         return result;
     }
 
@@ -334,7 +379,9 @@ public class Game {
         Card attackerCard = this.getCardAt(attackerPos);
 
         String result = "";
-
+        if (attackerCard == null) {
+            return "";
+        }
         // incep verificarile
         if (attackerCard.isFrozen()) {
             // verific daca cartea este inghetata
@@ -344,8 +391,8 @@ public class Game {
         } else {
             // caut un tank, iar daca exista il atac pe acela
             for (Card card : attackedPlayer.getFrontRow()) {
-                if (card.getName() == "Goliath" || card.getName() == "Warden") {
-                    attackerCard.attackCard(card); // TODO: DE CE MAI AM NEVOIE DE ASTA?? CE TREABA ARE CU EROUL?
+                if (card.getName().equals("Goliath") || card.getName().equals("Warden")) {
+                    attackerCard.attackCard(card);
                     if (card.getHealth() <= 0) {
                         attackedPlayer.getFrontRow().remove(card);
                     }
@@ -361,11 +408,45 @@ public class Game {
                     if (currentPlayer == 1) {
                         result = "Player one killed the enemy hero.";
                     } else {
-                        result = "Player two killed the enemy hero."; // TODO: cum termin jocul instant?
+                        result = "Player two killed the enemy hero.";
                     }
                 }
             }
         }
+        return result;
+    }
+
+    public String useHeroAbility(int attackedRow) {
+        // imi setez datele pentru a nu imi incurca playerii
+        Player attackerPlayer = (currentPlayer == 2) ? player2 : player1;
+        ArrayList<Card> affectedRow = this.getRowAt(attackedRow);
+
+        String result = "";
+
+        // incep verificarile
+        if (attackerPlayer.getMana() < attackerPlayer.getHero().getMana()) {
+            // nu am destula mana
+            result = "Not enough mana to use hero's ability.";
+        } else if (attackerPlayer.isUsedHero()) {
+            result = "Hero has already attacked this turn.";
+        } else if (attackerPlayer.getHero().getName().equals("Lord Royce") || attackerPlayer.getHero().getName().equals("Empress Thorina")) {
+            if ((currentPlayer == 1 && attackedRow >= 2) || (currentPlayer == 2 && attackedRow < 2)) {
+                result = "Selected row does not belong to the enemy.";
+            } else {
+                attackerPlayer.getHero().specialAbility(affectedRow);
+                attackerPlayer.setMana(attackerPlayer.getMana() - attackerPlayer.getHero().getMana());
+                attackerPlayer.setUsedHero(true);
+            }
+        } else if (attackerPlayer.getHero().getName().equals("General Kocioraw") || attackerPlayer.getHero().getName().equals("King Mudface")) {
+            if ((currentPlayer == 1 && attackedRow < 2) || (currentPlayer == 2 && attackedRow >= 2)) {
+                result = "Selected row does not belong to the current player.";
+            } else {
+                attackerPlayer.getHero().specialAbility(affectedRow);
+                attackerPlayer.setMana(attackerPlayer.getMana() - attackerPlayer.getHero().getMana());
+                attackerPlayer.setUsedHero(true);
+            }
+        }
+
         return result;
     }
 
@@ -410,26 +491,26 @@ public class Game {
     }
 
     public Card getCardAt(Coordinates position) {
-        ArrayList<Card> currentRow;
-        switch (position.getX()) {
-            case 0:
-                currentRow = player2.getBackRow();
-                break;
-            case 1:
-                currentRow = player2.getFrontRow();
-                break;
-            case 2:
-                currentRow = player1.getFrontRow();
-                break;
-            case 3:
-                currentRow = player1.getBackRow();
-                break;
-            default:
-                return null;
-        }
+        ArrayList<Card> currentRow = getRowAt(position.getX());
+
         if (position.getY() >= currentRow.size()) {
             return null;
         }
         return currentRow.get(position.getY());
+    }
+
+    public ArrayList<Card> getRowAt(int row) {
+        switch (row) {
+            case 0:
+                return player2.getBackRow();
+            case 1:
+                return player2.getFrontRow();
+            case 2:
+                return player1.getFrontRow();
+            case 3:
+                return player1.getBackRow();
+            default:
+                return null;
+        }
     }
 }

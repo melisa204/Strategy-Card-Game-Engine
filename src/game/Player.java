@@ -11,6 +11,16 @@ public class Player {
     private ArrayList<Card> backRow;
     private Hero hero;
 
+    public boolean isUsedHero() {
+        return usedHero;
+    }
+
+    public void setUsedHero(boolean usedHero) {
+        this.usedHero = usedHero;
+    }
+
+    private boolean usedHero = false;
+
     public ArrayList<Card> getCurrentDeck() {
         return currentDeck;
     }

@@ -47,11 +47,9 @@ public class CommandRunner {
                     break;
                 case "useAttackHero":
                     resultedNode = useAttackHero(action);
-                    // useAttackHero(action, output);
                     break;
                 case "useHeroAbility":
-                    // resultedNode = useHeroAbility(action);
-                    useHeroAbility(action, output);
+                    resultedNode = useHeroAbility(action);
                     break;
                 case "getCardsInHand":
                     resultedNode = getCardsInHand(action);
@@ -75,7 +73,7 @@ public class CommandRunner {
                     resultedNode = getPlayerMana(action);
                     break;
                 case "getFrozenCardsOnTable":
-                    getFrozenCardsOnTable(action, output);
+                    resultedNode = getFrozenCardsOnTable(action);
                     break;
                 case "getTotalGamesPlayed":
                     getTotalGamesPlayed(action, output);
@@ -92,8 +90,6 @@ public class CommandRunner {
             if (resultedNode != null)
                 output.add(resultedNode);
             resultedNode = null;
-            System.out.println("Index: " + commnandIndex);
-            System.out.println(output);
         }
     }
 
@@ -156,20 +152,33 @@ public class CommandRunner {
         String result = game.useAttackHero(action.getCardAttacker());
 
         if (result != "") {
+            if (!result.startsWith("Player ")) {
+                ObjectNode objectNode = objectMapper.createObjectNode();
+                objectNode.put("command", action.getCommand());
+                objectNode.put("cardAttacker", objectMapper.valueToTree(action.getCardAttacker()));
+                objectNode.put("error", result);
+                return objectNode;
+            } else {
+                ObjectNode objectNode = objectMapper.createObjectNode();
+                objectNode.put("gameEnded", result);
+                return objectNode;
+            }
+        }
+        return null;
+    }
+
+    public ObjectNode useHeroAbility(ActionsInput action) {
+        String result = game.useHeroAbility(action.getAffectedRow());
+
+        if (result != "") {
             ObjectNode objectNode = objectMapper.createObjectNode();
             objectNode.put("command", action.getCommand());
-            objectNode.put("cardAttacker", objectMapper.valueToTree(action.getCardAttacker()));
+            objectNode.put("affectedRow", action.getAffectedRow());
             objectNode.put("error", result);
-
             return objectNode;
         }
 
         return null;
-    }
-
-    public void useHeroAbility(ActionsInput action, ArrayNode output) {
-        // TODO
-
     }
 
     public ObjectNode getCardsInHand(ActionsInput action) {
@@ -259,8 +268,14 @@ public class CommandRunner {
         return objectNode;
     }
 
-    public void getFrozenCardsOnTable(ActionsInput action, ArrayNode output) {
-        // TODO
+    public ObjectNode getFrozenCardsOnTable(ActionsInput action) {
+        ArrayList<CardOutput> result = game.getFrozenCardsOnTable();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", action.getCommand());
+        objectNode.put("output", objectMapper.valueToTree(result));
+
+        return objectNode;
     }
 
     public void getTotalGamesPlayed(ActionsInput action, ArrayNode output) {

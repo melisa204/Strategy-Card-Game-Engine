@@ -16,6 +16,9 @@ public class Session {
         playersPacks = PlayersPacks.getInstance();
         playersPacks.clear();
         playersPacks.addDecks(inputData);
+
+        // de aici ar trb sa incep sa iterez cumva prin jocuri -> sa am grija ce trb sa resetez de la unul la altul
+
         // salvez datele legate de jocul propriu zis
         game = new Game(inputData.getGames().get(0).getStartGame());
         // salvez actiunile
