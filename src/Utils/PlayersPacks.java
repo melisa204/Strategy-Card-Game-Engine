@@ -28,6 +28,8 @@ public class PlayersPacks {
     public int nrDecksPlayer1, nrDecksPlayer2;
     public ArrayList<ArrayList<Card>> decksPlayer1 = new ArrayList<>();
     public ArrayList<ArrayList<Card>> decksPlayer2 = new ArrayList<>();
+    public Integer victoriesPlayer1;
+    public Integer victoriesPlayer2;
     public void addDecks(Input inputData) {
         nrCardsInDeckPlayer1 = inputData.getPlayerOneDecks().getNrCardsInDeck();
         nrCardsInDeckPlayer2 = inputData.getPlayerTwoDecks().getNrCardsInDeck();

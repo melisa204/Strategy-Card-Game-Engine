@@ -76,13 +76,13 @@ public class CommandRunner {
                     resultedNode = getFrozenCardsOnTable(action);
                     break;
                 case "getTotalGamesPlayed":
-                    getTotalGamesPlayed(action, output);
+                    resultedNode = getTotalGamesPlayed(action);
                     break;
                 case "getPlayerOneWins":
-                    getPlayerOneWins(action, output);
+                    resultedNode = getPlayerOneWins(action);
                     break;
                 case "getPlayerTwoWins":
-                    getPlayerTwoWins(action, output);
+                    resultedNode = getPlayerTwoWins(action);
                     break;
                 default:
                     break;
@@ -278,15 +278,33 @@ public class CommandRunner {
         return objectNode;
     }
 
-    public void getTotalGamesPlayed(ActionsInput action, ArrayNode output) {
-        // TODO
+    public ObjectNode getTotalGamesPlayed(ActionsInput action) {
+        Integer result = game.getTotalGamesPlayed();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", action.getCommand());
+        objectNode.put("output", result);
+
+        return objectNode;
     }
 
-    public void getPlayerOneWins(ActionsInput action, ArrayNode output) {
-        // TODO
+    public ObjectNode getPlayerOneWins(ActionsInput action) {
+        Integer result = game.getPlayerOneWins();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", action.getCommand());
+        objectNode.put("output", result);
+
+        return objectNode;
     }
 
-    public void getPlayerTwoWins(ActionsInput action, ArrayNode output) {
-        // TODO
+    public ObjectNode getPlayerTwoWins(ActionsInput action) {
+        Integer result = game.getPlayerTwoWins();
+
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("command", action.getCommand());
+        objectNode.put("output", result);
+
+        return objectNode;
     }
 }

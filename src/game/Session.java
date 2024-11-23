@@ -16,13 +16,21 @@ public class Session {
         playersPacks = PlayersPacks.getInstance();
         playersPacks.clear();
         playersPacks.addDecks(inputData);
+        playersPacks.victoriesPlayer1 = 0;
+        playersPacks.victoriesPlayer2 = 0;
 
         // de aici ar trb sa incep sa iterez cumva prin jocuri -> sa am grija ce trb sa resetez de la unul la altul
 
         // salvez datele legate de jocul propriu zis
-        game = new Game(inputData.getGames().get(0).getStartGame());
-        // salvez actiunile
-        commandRunner = new CommandRunner(inputData.getGames().get(0).getActions(), this.output, game);
-        commandRunner.startGame();
+        for (Integer i = 0; i < inputData.getGames().size(); i++) {
+            game = new Game(inputData.getGames().get(i).getStartGame());
+            // salvez actiunile
+            commandRunner = new CommandRunner(inputData.getGames().get(i).getActions(), this.output, game);
+            commandRunner.startGame();
+        }
+//        game = new Game(inputData.getGames().get(0).getStartGame());
+//        // salvez actiunile
+//        commandRunner = new CommandRunner(inputData.getGames().get(0).getActions(), this.output, game);
+//        commandRunner.startGame();
     }
 }

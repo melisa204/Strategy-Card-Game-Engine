@@ -393,10 +393,11 @@ public class Game {
             for (Card card : attackedPlayer.getFrontRow()) {
                 if (card.getName().equals("Goliath") || card.getName().equals("Warden")) {
                     attackerCard.attackCard(card);
+                    result = "Attacked card is not of type 'Tank'.";
                     if (card.getHealth() <= 0) {
                         attackedPlayer.getFrontRow().remove(card);
                     }
-                    result = "";
+                    //result = "";
                     break;
                 }
             }
@@ -407,8 +408,10 @@ public class Game {
                     // daca cartea atacata a murit, o elimin
                     if (currentPlayer == 1) {
                         result = "Player one killed the enemy hero.";
+                        playersPacks.victoriesPlayer1++;
                     } else {
                         result = "Player two killed the enemy hero.";
+                        playersPacks.victoriesPlayer2++;
                     }
                 }
             }
@@ -513,4 +516,15 @@ public class Game {
                 return null;
         }
     }
+
+    public Integer getTotalGamesPlayed() {
+        return playersPacks.victoriesPlayer1 + playersPacks.victoriesPlayer2;
+    }
+    public Integer getPlayerOneWins() {
+        return playersPacks.victoriesPlayer1;
+    }
+    public Integer getPlayerTwoWins() {
+        return playersPacks.victoriesPlayer2;
+    }
+
 }

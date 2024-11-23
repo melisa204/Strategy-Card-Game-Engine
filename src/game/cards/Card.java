@@ -104,7 +104,7 @@ public class Card {
 
     public void attackCard(Card card) {
         card.setHealth(card.getHealth() - this.attackDamage);
-        this.attacked = true;
+        this.setAttacked(true); // AICI AM SCHIMBAT
     }
 
     public void specialAbility(Card card) {

@@ -63,6 +63,7 @@ public abstract class Hero {
     abstract public void specialAbility(ArrayList<Card> attackedRow);
 
     public void attackHero(Card card) {
+        card.setAttacked(true); // NU CRED CA E ASA TOTUSI
         this.setHealth(this.getHealth() - card.getAttackDamage());
     }
 }
