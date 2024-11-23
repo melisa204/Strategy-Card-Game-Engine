@@ -57,8 +57,6 @@ public final class Main {
 
             boolean isCreated = out.createNewFile();
             if (isCreated) {
-//                System.out.println("cevavesafas" + filepath);
-//                System.out.println("Test " + file.getName() + " was created");
                 action(file.getName(), filepath);
             }
         }

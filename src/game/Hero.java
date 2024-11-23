@@ -9,61 +9,74 @@ public abstract class Hero {
     private int mana;
     private int health;
     private String description;
-    private ArrayList<String> colors; // poate sa fie enum
+    private ArrayList<String> colors;
     private String name;
+    static final int DEFAULT_HEALTH = 30;
 
-    public int getMana() {
+    public final int getMana() {
         return mana;
     }
 
-    public void setMana(int mana) {
+    public final void setMana(final int mana) {
         this.mana = mana;
     }
 
-    public int getHealth() {
+    public final int getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
+    public final void setHealth(final int health) {
         this.health = health;
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public final void setDescription(final String description) {
         this.description = description;
     }
 
-    public ArrayList<String> getColors() {
+    public final ArrayList<String> getColors() {
         return colors;
     }
 
-    public void setColors(ArrayList<String> colors) {
+    public final void setColors(final ArrayList<String> colors) {
         this.colors = colors;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public final void setName(final String name) {
         this.name = name;
     }
 
-    public Hero(CardInput card) {
+    public Hero(final CardInput card) {
         this.mana = card.getMana();
-        this.health = 30;
+        this.health = DEFAULT_HEALTH;
         this.description = card.getDescription();
         this.colors = card.getColors();
         this.name = card.getName();
     }
-
-    abstract public void specialAbility(ArrayList<Card> attackedRow);
-
-    public void attackHero(Card card) {
-        card.setAttacked(true); // NU CRED CA E ASA TOTUSI
+    /**
+     * Defines the special ability of the card, to be implemented by subclasses.
+     * This ability is applied to all cards in the specified row.
+     *
+     * @param attackedRow an {@code ArrayList<Card>} representing the row of cards affected by the
+     *                    ability.
+     */
+    public abstract void specialAbility(ArrayList<Card> attackedRow);
+    /**
+     * Executes an attack on the hero by the specified card.
+     * This method reduces the hero's health by the attack damage of the card
+     * and marks the card as having attacked.
+     *
+     * @param card the {@code Card} object performing the attack on the hero.
+     */
+    public void attackHero(final Card card) {
+        card.setAttacked(true);
         this.setHealth(this.getHealth() - card.getAttackDamage());
     }
 }

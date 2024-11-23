@@ -13,7 +13,7 @@ public class CardOutput {
     private String name;
 
 
-    public CardOutput(Card card) {
+    public CardOutput(final Card card) {
         this.mana = card.getMana();
         this.health = card.getHealth();
         this.description = card.getDescription();
@@ -25,51 +25,51 @@ public class CardOutput {
         this.attackDamage = card.getAttackDamage();
     }
 
-    public int getMana() {
+    public final int getMana() {
         return mana;
     }
 
-    public void setMana(int mana) {
+    public final void setMana(final int mana) {
         this.mana = mana;
     }
 
-    public int getHealth() {
+    public final int getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
+    public final void setHealth(final int health) {
         this.health = health;
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public final void setDescription(final String description) {
         this.description = description;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public final void setName(final String name) {
         this.name = name;
     }
 
-    public int getAttackDamage() {
+    public final int getAttackDamage() {
         return attackDamage;
     }
 
-    public void setAttackDamage(int attackDamage) {
+    public final void setAttackDamage(final int attackDamage) {
         this.attackDamage = attackDamage;
     }
 
-    public ArrayList<String> getColors() {
+    public final ArrayList<String> getColors() {
         return colors;
     }
 
-    public void setColors(ArrayList<String> colors) {
+    public final void setColors(final ArrayList<String> colors) {
         this.colors = colors;
     }
 }
