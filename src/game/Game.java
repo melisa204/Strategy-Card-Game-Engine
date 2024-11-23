@@ -246,6 +246,7 @@ public class Game {
         // imi setez datele pentru a nu imi incurca playerii
         Player attackedPlayer = (currentPlayer == 2) ? player1 : player2;
         Card attackerCard = this.getCardAt(attackerPos);
+        Card defenderCard = this.getCardAt(attackedPos);
 
         String result = "";
 
@@ -255,26 +256,33 @@ public class Game {
             result = "Attacked card does not belong to the enemy.";
         } else if (attackerCard.usedAttack()) {
             // verific daca cartea a atacat deja
-            result = "Card has already attacked.";
+            result = "Attacker card has already attacked this turn.";
         } else if (attackerCard.isFrozen()) {
             // verific daca cartea este inghetata
             result = "Attacker card is frozen.";
         } else {
             // caut un tank, iar daca exista il atac pe acela
-            for (Card card : attackedPlayer.getFrontRow()) {
-                if (card.getName() == "Goliath" || card.getName() == "Warden") {
-                    attackerCard.attackCard(card);
-                    if (card.getHealth() <= 0) {
-                        attackedPlayer.getFrontRow().remove(card);
+            if (!defenderCard.isTank()) {
+                for (Card card : attackedPlayer.getFrontRow()) {
+                    if (card.getName().equals("Goliath") || card.getName().equals("Warden")) {
+
+                        if (card == defenderCard) {
+                            result = "";
+                            attackerCard.attackCard(card);
+                            if (card.getHealth() <= 0) {
+                                attackedPlayer.getFrontRow().remove(card);
+                            }
+                        } else {
+                            result = "Attacked card is not of type 'Tank'.";
+                        }
+                        return result;
                     }
-                    result = "";
-                    break;
                 }
             }
             if (attackerCard.usedAttack() == false) {
                 // daca nu am gasit tank, atac cartea de pe pozitia attackedPos
-                attackerCard.attackCard(this.getCardAt(attackedPos));
-                if (this.getCardAt(attackedPos).getHealth() <= 0) {
+                attackerCard.attackCard(defenderCard);
+                if (defenderCard.getHealth() <= 0) {
                     // daca cartea atacata a murit, o elimin
                     switch (attackedPos.getX()) {
                         case 0:
@@ -300,6 +308,7 @@ public class Game {
         // imi setez datele pentru a nu imi incurca playerii
         Player attackedPlayer = (currentPlayer == 2) ? player1 : player2;
         Card attackerCard = this.getCardAt(attackerPos);
+        Card defenderCard = this.getCardAt(attackedPos);
 
         String result = "";
         System.out.println("numele atacatorului este: " + attackerCard.getName());
@@ -334,15 +343,21 @@ public class Game {
                 System.out.println("am vazut ca nu e a mea");
             } else {
                 // caut un tank, iar daca exista il atac pe acela
-                for (Card card : attackedPlayer.getFrontRow()) {
-                    if (card.getName() == "Goliath" || card.getName() == "Warden") {
-                        attackerCard.specialAbility(card);
-                        if (card.getHealth() <= 0) {
-                            attackedPlayer.getFrontRow().remove(card);
+                if (!defenderCard.isTank()) {
+                    for (Card card : attackedPlayer.getFrontRow()) {
+                        if (card.isTank()) {
+                            if (card == defenderCard) {
+                                result = "";
+                                attackerCard.specialAbility(card);
+                                if (card.getHealth() <= 0) {
+                                    attackedPlayer.getFrontRow().remove(card);
+                                }
+                            } else {
+                                result = "Attacked card is not of type 'Tank'.";
+                            }
+                            System.out.println("Abilitate pe tank la " + attackedPos.getX() + " " + attackedPos.getY());
+                            return result;
                         }
-                        result = "";
-                        System.out.println("Abilitate pe tank la " + attackedPos.getX() + " " + attackedPos.getY());
-                        break;
                     }
                 }
                 if (attackerCard.usedAttack() == false) {
@@ -392,13 +407,13 @@ public class Game {
             // caut un tank, iar daca exista il atac pe acela
             for (Card card : attackedPlayer.getFrontRow()) {
                 if (card.getName().equals("Goliath") || card.getName().equals("Warden")) {
-                    attackerCard.attackCard(card);
+//                    attackerCard.attackCard(card);
                     result = "Attacked card is not of type 'Tank'.";
-                    if (card.getHealth() <= 0) {
-                        attackedPlayer.getFrontRow().remove(card);
-                    }
+//                    if (card.getHealth() <= 0) {
+//                        attackedPlayer.getFrontRow().remove(card);
+//                    }
                     //result = "";
-                    break;
+                    return result;
                 }
             }
             if (attackerCard.usedAttack() == false) {

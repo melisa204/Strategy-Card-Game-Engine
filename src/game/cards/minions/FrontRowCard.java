@@ -22,8 +22,11 @@ public class FrontRowCard extends Card {
         else if (player.getFrontRow().size() >= 5)
             return "Cannot place card on table since row is full.";
         else {
+
             player.setMana(player.getMana() - player.getCurrentHand().get(handIdx).getMana());
-            player.getFrontRow().add(player.getCurrentHand().get(handIdx));
+            FrontRowCard card = (FrontRowCard) player.getCurrentHand().get(handIdx);
+            card.setAttacked(false);
+            player.getFrontRow().add(card);
             player.getCurrentHand().remove(handIdx);
 //            System.out.println("FrontRowCard placed");
             return "";

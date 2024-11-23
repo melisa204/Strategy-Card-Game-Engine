@@ -107,6 +107,10 @@ public class Card {
         this.setAttacked(true); // AICI AM SCHIMBAT
     }
 
+    public boolean isTank() {
+        return this.getName().equals("Goliath") || this.getName().equals("Warden");
+    }
+
     public void specialAbility(Card card) {
     }
 

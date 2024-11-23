@@ -21,7 +21,9 @@ public class BackRowCard extends Card {
             return "Cannot place card on table since row is full.";
         else {
             player.setMana(player.getMana() - player.getCurrentHand().get(handIdx).getMana());
-            player.getBackRow().add(player.getCurrentHand().get(handIdx));
+            BackRowCard card = (BackRowCard) player.getCurrentHand().get(handIdx);
+            card.setAttacked(false);
+            player.getBackRow().add(card);
             player.getCurrentHand().remove(handIdx);
 //            System.out.println("BackRowCard placed");
             return "";

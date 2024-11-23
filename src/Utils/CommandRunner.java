@@ -120,6 +120,7 @@ public class CommandRunner {
 
         if (result != "") {
             ObjectNode objectNode = objectMapper.createObjectNode();
+//            objectNode.put("index", commnandIndex);
             objectNode.put("command", action.getCommand());
             objectNode.put("cardAttacker", objectMapper.valueToTree(action.getCardAttacker()));
             objectNode.put("cardAttacked", objectMapper.valueToTree(action.getCardAttacked()));
